@@ -25,3 +25,9 @@ generate-bootable-image $base_dir=base_dir $filesystem=filesystem:
         fallocate -l 20G "${base_dir}/bootable.img"
     fi
     just bootc install to-disk --composefs-backend --via-loopback /data/bootable.img --filesystem "${filesystem}" --wipe --bootloader systemd
+
+build-the-fucking-image:
+    sudo setenforce 0
+    just build-containerfile
+    just generate-bootable-image
+    sudo setenforce 1
