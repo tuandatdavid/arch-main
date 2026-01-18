@@ -27,6 +27,7 @@ pacman -S bootc --noconfirm
 # Useful utilities
 pacman -S --noconfirm reflector sudo bash fastfetch nano openssh unzip tar flatpak fuse2 fzf just wl-clipboard
 pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager udiskie udisks2 udisks2-btrfs lvm2 cups cups-browsed hplip wireguard-tools
+pacman -S --noconfirm dosfstools cryptsetup lvm2 bluez bluez-utils tuned tuned-ppd
 pacman -S --noconfirm distrobox podman squashfs-tools zstd
 
 # Codecs and media
@@ -38,10 +39,19 @@ pacman -S --noconfirm amd-ucode intel-ucode efibootmgr shim mesa libva-intel-dri
     lm_sensors intel-media-driver
 
 # Systemd services
-systemctl enable polkit.service \
-    NetworkManager.service \
-    cups.socket \
-    cups-browsed.service
+systemctl enable polkit.service
+systemctl enable NetworkManager.service
+systemctl enable cups.socket
+systemctl enable cups-browsed.service
+systemctl enable tuned-ppd.service
+systemctl enable tuned.service
+systemctl enable systemd-resolved.service
+systemctl enable systemd-resolved-varlink.socket
+systemctl enable systemd-resolved-monitor.socket
+systemctl enable bluetooth.service
+systemctl enable avahi-daemon.service
+
+ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 # Cleanup
 rm -rf \
