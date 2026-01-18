@@ -51,8 +51,6 @@ systemctl enable systemd-resolved-monitor.socket
 systemctl enable bluetooth.service
 systemctl enable avahi-daemon.service
 
-ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-
 # Cleanup
 rm -rf \
     /tmp/* \
