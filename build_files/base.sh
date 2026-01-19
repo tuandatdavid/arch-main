@@ -51,8 +51,30 @@ systemctl enable systemd-resolved-monitor.socket
 systemctl enable bluetooth.service
 systemctl enable avahi-daemon.service
 
+# Fix users
+cat > /etc/nsswitch.conf <<EOF
+passwd: files systemd
+group: files [SUCCESS=merge] systemd
+shadow: files
+hosts: files mymachines dns myhostname
+networks: files
+protocols: files
+services: files
+ethers: files
+rpc: files
+netgroup: files
+EOF
+
 systemd-sysusers --root=/
 systemd-tmpfiles --root=/ --create --prefix=/var/lib/polkit-1
+
+mkdir -p /usr/lib/tmpfiles.d
+echo "d /var/lib/polkit-1 0700 polkitd polkitd -" > /usr/lib/tmpfiles.d/polkit.conf
+echo "d /var/lib/AccountsService 0775 root root -" > /usr/lib/tmpfiles.d/accounts.conf
+
+if [ ! -L /lib ]; then
+  ln -s usr/lib /lib
+fi
 
 # Cleanup
 rm -rf \
