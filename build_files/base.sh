@@ -51,6 +51,9 @@ systemctl enable systemd-resolved-monitor.socket
 systemctl enable bluetooth.service
 systemctl enable avahi-daemon.service
 
+systemd-sysusers --root=/
+systemd-tmpfiles --root=/ --create --prefix=/var/lib/polkit-1
+
 # Cleanup
 rm -rf \
     /tmp/* \
