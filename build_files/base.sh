@@ -76,6 +76,11 @@ if [ ! -L /lib ]; then
   ln -s usr/lib /lib
 fi
 
+POLKIT_DBUS="/usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service"
+if [[ -f "$POLKIT_DBUS" ]]; then
+    sed -i 's/User=root/User=polkitd/' "$POLKIT_DBUS"
+fi
+
 # Cleanup
 rm -rf \
     /tmp/* \
