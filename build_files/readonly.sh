@@ -22,8 +22,6 @@ ln -sf var/srv /srv
 ln -sf var/opt /opt
 ln -sf var/mnt /mnt
 
-rm -rf /etc/*
-
 # Setup a temporary root passwd (changeme) for dev purposes
 # pacman -S whois --noconfirm
 # usermod -p "$(echo "changeme" | mkpasswd -s)" root
