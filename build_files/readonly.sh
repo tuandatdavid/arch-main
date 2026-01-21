@@ -11,17 +11,6 @@ echo "$(for dir in opt home srv mnt usrlocal ; do echo "d /var/$dir 0755 root ro
 printf "d /var/roothome 0700 root root -\nd /run/media 0755 root root -" | tee -a "/usr/lib/tmpfiles.d/bootc-base-dirs.conf" && \
 printf '[composefs]\nenabled = yes\n[sysroot]\nreadonly = true\n' | tee "/usr/lib/ostree/prepare-root.conf"
 
-# Test etc
-mkdir -p /usr/etc
-cp -a /etc/. /usr/etc/ 2>/dev/null || true
-
-rm -rf /home /root /srv /opt /mnt
-ln -sf var/home /home
-ln -sf var/roothome /root
-ln -sf var/srv /srv
-ln -sf var/opt /opt
-ln -sf var/mnt /mnt
-
 # Setup a temporary root passwd (changeme) for dev purposes
 # pacman -S whois --noconfirm
 # usermod -p "$(echo "changeme" | mkpasswd -s)" root
