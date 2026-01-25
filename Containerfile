@@ -26,7 +26,26 @@ RUN pacman -S --noconfirm \
     vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu zram-generator \
     lm_sensors intel-media-driver
 
+# Fix users and group after rebasing from non-arch image
+RUN mkdir -p /usr/lib/systemd/system-preset /usr/lib/systemd/system
+RUN echo -e '#!/bin/sh\ncat /usr/lib/sysusers.d/*.conf | grep -e "^g" | grep -v -e "^#" | awk "NF" | awk '\''{print $2}'\'' | grep -v -e "wheel" -e "root" -e "sudo" | xargs -I{} sed -i "/{}/d" $1' > /usr/libexec/arch-group-fix
+RUN chmod +x /usr/libexec/arch-group-fix
+RUN echo -e '[Unit]\n\
+Description=Fix groups\n\
+Wants=local-fs.target\n\
+After=local-fs.target\n\
+[Service]\n\
+Type=oneshot\n\
+ExecStart=/usr/libexec/arch-group-fix /etc/group\n\
+ExecStart=/usr/libexec/arch-group-fix /etc/gshadow\n\
+ExecStart=systemd-sysusers\n\
+[Install]\n\
+WantedBy=default.target multi-user.target' > /usr/lib/systemd/system/arch-group-fix.service
+
+RUN echo -e "enable arch-group-fix.service" > /usr/lib/systemd/system-preset/01-arch-group-fix.preset
+
 RUN systemctl enable polkit.service && \
+    systemctl enable arch-group-fix.service && \
     systemctl enable NetworkManager.service && \
     systemctl enable cups.socket && \
     systemctl enable cups-browsed.service && \
