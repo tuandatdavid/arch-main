@@ -34,12 +34,10 @@ RUN echo -e '[Unit]\n\
 Description=Fix groups\n\
 DefaultDependencies=no\n\
 After=local-fs.target\n\
-Before=sysinit.target systemd-sysusers.service\n\
 Wants=local-fs.target\n\
 \n\
 [Service]\n\
 Type=oneshot\n\
-RemainAfterExit=yes\n\
 ExecStart=/usr/libexec/arch-group-fix /etc/group\n\
 ExecStart=/usr/libexec/arch-group-fix /etc/gshadow\n\
 ExecStart=/usr/bin/systemd-sysusers\n\
