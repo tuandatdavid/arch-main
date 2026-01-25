@@ -29,17 +29,28 @@ RUN pacman -S --noconfirm \
 RUN mkdir -p /usr/lib/systemd/system-preset /usr/lib/systemd/system
 RUN echo -e '#!/bin/sh\ncat /usr/lib/sysusers.d/*.conf | grep -e "^g" | grep -v -e "^#" | awk "NF" | awk '\''{print $2}'\'' | grep -v -e "wheel" -e "root" -e "sudo" | xargs -I{} sed -i "/{}/d" "$1"' > /usr/libexec/arch-group-fix
 RUN chmod +x /usr/libexec/arch-group-fix
+
+# Sudo for wheel group
+RUN echo -e '#!/bin/sh\ngrep -q "^wheel:" /etc/group || groupadd -g 998 wheel; if [ -f /etc/sudoers ]; then sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers; grep -q "^%wheel ALL=(ALL:ALL) ALL" /etc/sudoers || echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers; fi' > /usr/libexec/arch-wheel-fix
+RUN chmod +x /usr/libexec/arch-wheel-fix
+
 RUN echo -e '[Unit]\n\
 Description=Fix groups\n\
-Wants=local-fs.target\n\
+DefaultDependencies=no\n\
 After=local-fs.target\n\
+Before=sysinit.target systemd-sysusers.service\n\
+Wants=local-fs.target\n\
+\n\
 [Service]\n\
 Type=oneshot\n\
+RemainAfterExit=yes\n\
 ExecStart=/usr/libexec/arch-group-fix /etc/group\n\
 ExecStart=/usr/libexec/arch-group-fix /etc/gshadow\n\
-ExecStart=systemd-sysusers\n\
+ExecStart=/usr/libexec/arch-wheel-fix\n\
+ExecStart=/usr/bin/systemd-sysusers\n\
+\n\
 [Install]\n\
-WantedBy=default.target multi-user.target' > /usr/lib/systemd/system/arch-group-fix.service
+WantedBy=sysinit.target' > /usr/lib/systemd/system/arch-group-fix.service
 
 RUN echo -e "enable arch-group-fix.service" > /usr/lib/systemd/system-preset/01-arch-group-fix.preset
 
