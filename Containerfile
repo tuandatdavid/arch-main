@@ -37,7 +37,7 @@ RUN chmod +x /usr/libexec/arch-wheel-fix
 RUN echo -e '[Unit]\n\
 Description=Fix groups\n\
 DefaultDependencies=no\n\
-After=local-fs.target\n\
+After=systemd-remount-fs.service\n\
 Before=sysinit.target systemd-sysusers.service\n\
 Wants=local-fs.target\n\
 \n\
