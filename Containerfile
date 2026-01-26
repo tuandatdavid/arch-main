@@ -39,7 +39,7 @@ RUN chmod +x /usr/libexec/arch-group-fix
 
 RUN echo -e '#!/bin/sh\n\
 ITEMS=$(grep -hE "^(g|u)" /usr/lib/sysusers.d/*.conf | awk "{print \$2}" | grep -vE "^(wheel|root|sudo)$")\n\
-for i in $ITEMS; do sed -i "/^${i}:/d" "$1"; done' > /usr/libexec/arch-user-fix
+for i in $ITEMS; do sed -i "/^${i}:/d" "$1"; done' > /usr/libexec/arch-user-fix 
 RUN chmod +x /usr/libexec/arch-user-fix
 
 RUN echo -e '[Unit]\n\
@@ -52,8 +52,8 @@ Wants=local-fs.target\n\
 Type=oneshot\n\
 ExecStart=/usr/libexec/arch-group-fix /etc/group\n\
 ExecStart=/usr/libexec/arch-group-fix /etc/gshadow\n\
-ExecStart=/usr/libexec/arch-user-fix /etc/passwd
-ExecStart=/usr/libexec/arch-user-fix /etc/shadow
+ExecStart=/usr/libexec/arch-user-fix /etc/passwd\n\
+ExecStart=/usr/libexec/arch-user-fix /etc/shadow\n\
 ExecStart=/usr/bin/systemd-sysusers\n\
 \n\
 [Install]\n\
