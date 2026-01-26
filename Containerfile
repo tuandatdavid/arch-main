@@ -58,6 +58,10 @@ RUN echo -e "enable arch-group-fix.service" > /usr/lib/systemd/system-preset/01-
 RUN sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers || \
     echo "%wheel ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
+RUN echo -e 'enable systemd-resolved.service' > /usr/lib/systemd/system-preset/91-resolved-default.preset
+RUN echo -e 'L /etc/resolv.conf - - - - ../run/systemd/resolve/stub-resolv.conf' > /usr/lib/tmpfiles.d/resolved-default.conf
+RUN systemctl preset systemd-resolved.service
+
 RUN systemctl enable polkit.service && \
     systemctl enable arch-group-fix.service && \
     systemctl enable NetworkManager.service && \
