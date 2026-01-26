@@ -27,7 +27,15 @@ RUN pacman -S --noconfirm \
 
 # Fix users and group after rebasing from non-arch image
 RUN mkdir -p /usr/lib/systemd/system-preset /usr/lib/systemd/system
-RUN echo -e '#!/bin/sh\ncat /usr/lib/sysusers.d/*.conf | grep -e "^g" | grep -v -e "^#" | awk "NF" | awk '\''{print $2}'\'' | grep -v -e "wheel" -e "root" -e "sudo" | xargs -I{} sed -i "/{}/d" "$1"' > /usr/libexec/arch-group-fix
+RUN echo -e '#!/bin/sh\n\
+cat /usr/lib/sysusers.d/*.conf | \
+grep -e "^g" | \
+grep -v -e "^#" | \
+awk "NF" | \
+awk '\''{print $2}'\'' | \
+grep -v -e "wheel" -e "root" -e "sudo" | \
+xargs -I{} sed -i "/{}/d" "$1"\n\
+useradd --system --no-create-home --shell /usr/bin/nologin systemd-resolved' > /usr/libexec/arch-group-fix
 RUN chmod +x /usr/libexec/arch-group-fix
 
 RUN echo -e '[Unit]\n\
