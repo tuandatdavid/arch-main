@@ -37,6 +37,9 @@ grep -v -e "wheel" -e "root" -e "sudo" | \
 xargs -I{} sed -i "/{}/d" "$1"\n\
 if ! id "systemd-resolved" >/dev/null 2>&1; then\n\
     useradd --system --no-create-home --shell /usr/bin/nologin systemd-resolved\n\
+fi\n\
+if ! id "systemd-resolve" >/dev/null 2>&1; then\n\
+    useradd --system --no-create-home --shell /usr/bin/nologin systemd-resolve\n\
 fi' > /usr/libexec/arch-group-fix && chmod +x /usr/libexec/arch-group-fix
 RUN chmod +x /usr/libexec/arch-group-fix
 
