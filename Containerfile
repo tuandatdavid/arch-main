@@ -35,7 +35,9 @@ awk "NF" | \
 awk '\''{print $2}'\'' | \
 grep -v -e "wheel" -e "root" -e "sudo" | \
 xargs -I{} sed -i "/{}/d" "$1"\n\
-useradd --system --no-create-home --shell /usr/bin/nologin systemd-resolved' > /usr/libexec/arch-group-fix
+if ! id "systemd-resolved" >/dev/null 2>&1; then\n\
+    useradd --system --no-create-home --shell /usr/bin/nologin systemd-resolved\n\
+fi' > /usr/libexec/arch-group-fix && chmod +x /usr/libexec/arch-group-fix
 RUN chmod +x /usr/libexec/arch-group-fix
 
 RUN echo -e '[Unit]\n\
