@@ -41,6 +41,7 @@ RUN echo -e '[Unit]\n\
 Description=Fix groups\n\
 DefaultDependencies=no\n\
 After=local-fs.target\n\
+Before=sysinit.target systemd-resolved.service\n\
 Wants=local-fs.target\n\
 \n\
 [Service]\n\
@@ -61,9 +62,6 @@ RUN sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoer
 RUN echo -e 'enable systemd-resolved.service' > /usr/lib/systemd/system-preset/91-resolved-default.preset
 RUN echo -e 'L /etc/resolv.conf - - - - ../run/systemd/resolve/stub-resolv.conf' > /usr/lib/tmpfiles.d/resolved-default.conf
 RUN systemctl preset systemd-resolved.service
-
-RUN mkdir -p /etc/NetworkManager/conf.d && \
-    echo -e '[main]\ndns=systemd-resolved' > /etc/NetworkManager/conf.d/dns.conf
 
 RUN systemctl enable polkit.service && \
     systemctl enable arch-group-fix.service && \
