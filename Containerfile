@@ -65,8 +65,6 @@ RUN systemctl preset systemd-resolved.service
 RUN mkdir -p /etc/NetworkManager/conf.d && \
     echo -e '[main]\ndns=systemd-resolved' > /etc/NetworkManager/conf.d/dns.conf
 
-RUN ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-
 RUN systemctl enable polkit.service && \
     systemctl enable arch-group-fix.service && \
     systemctl enable NetworkManager.service && \
