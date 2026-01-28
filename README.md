@@ -1,7 +1,5 @@
 # Arch-base
 
-**This is still WIP**
-
 Base [Arch Linux](https://archlinux.org/) container image with [bootc](https://github.com/bootc-dev/bootc) for usage in custom images. Similar for what is [Universal Blue main image](https://github.com/ublue-os/main/tree/main) to Fedora. 
 
 - Images are build every day
